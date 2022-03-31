@@ -32,6 +32,8 @@ ecs = session.client('ecs')
 
 def lambda_handler(event, context):
     print(event)
+    # If you HTTP GET this Lambda without a body and without a notification signature header, it will fail
+    # and you will see a 502 Internal server error. That is expected.
     message = bytes(event['body'], 'utf-8')
     secret = bytes(ssm.get_parameter(Name=SALT_PATH, WithDecryption=True)['Parameter']['Value'], 'utf-8')
     hash = hmac.new(secret, message, hashlib.sha512)
